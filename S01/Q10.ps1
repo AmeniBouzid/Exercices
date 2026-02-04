@@ -1,3 +1,6 @@
+# Script PowerShell pour créer une structure de dossiers pour une session de cours  
+# Etudiants: Ameni Bouzid et Eddy Manoa Randrianarison
+
 # On récupère le chemin du dossier courant où le script est exécuté
 $cheminRacine = Get-Location
 
