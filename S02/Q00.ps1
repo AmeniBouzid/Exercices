@@ -36,12 +36,13 @@ Get-PhysicalDisk #pour les disques physiques
 
 #Q05
 Get-process # -Name est à la position 0
-Get-Process # aucun parametre n'est obligatoire parce que la commande 
-            #affiche des info détaillée sur le processes 
+get-help Get-Process -Online
 #les parametres de Get-process qui acceptent des entrées par pipeline
 #sont : Name, Id, InputObject
 #	Quel est le type d'objet (.NET TypeName) retourné par Get-Process ?
+Get-Process | Get-Member 
 # commande pour manipuler ou tester un chemin (path):
+Get-Command -Noun Path 
 Test-Path #Vérifier si un fichier/dossier existe (ex: Test-Path "C:\temp\fichier.txt").
 Test-Path -PathType Container # Vérifier spécifiquement si le chemin est un dossier.
 Join-Path #Combiner deux parties de chemin pour créer une chaîne valide (ex: Join-Path "C:\Dir" "file.txt").
