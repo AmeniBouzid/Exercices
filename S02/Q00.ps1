@@ -51,12 +51,17 @@ Resolve-Path #Résoudre un chemin relatif (ex: .\) en chemin absolu complet.
 
 #Q06
 Get-Command *ipAddress* 
-Get-NetAdapter -Physical | where-object { $_.Status -eq "up" } | Select-Object -Property name, ipAddress
 
+#Problème: N'affiche pas l'adresse IP (corrigé)
+Get-NetAdapter -Physical | where-object { $_.Status -eq "up" } | Get-NetIPAddress |where IPv4Address | Select InterfaceAlias,IpV4Address
+
+#Problème: affiche l'adress IPV6 et IPV4
 Get-NetAdapter -Physical | where-object { $_.Status -eq "up" } | Select-Object -Property name,@{n='IPAddress';e={(Get-NetIPAddress -InterfaceAlias  $_.Name).IPAddress}}
 
+#Problème: affiche le bon résultat mais je ne comprends pas la partie Select-Object
 Get-NetAdapter -physical | Get-NetIPConfiguration | Where-Object { $_.NetAdapter.Status -eq "Up" } | Select-Object @{n='Name';e={$_.NetAdapter.Name}}, @{n='IPAddress';e={$_.IPv4Address.IPAddress}}
 
+#Solution trouvée sur CHATGPT avec objet personnalisé
 Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" } | ForEach-Object {
     $ip = (Get-NetIPConfiguration -InterfaceIndex $_.InterfaceIndex).IPv4Address.IPAddress
     [PSCustomObject]@{
@@ -64,3 +69,15 @@ Get-NetAdapter -Physical | Where-Object { $_.Status -eq "Up" } | ForEach-Object 
         IPAddress = $ip
     }
 }
+#Solution avec boucle (fournis par le prof)
+$adapters = Get-NetAdapter -physical
+foreach ($adapter in $adapters)
+{
+  if ($adapter.status -eq 'Up')
+  {
+       $ipv4 = Get-NetIPAddress -InterfaceAlias $adapter.Name
+       write-host $adapter.Name  ' ' $ipv4.IPv4Address
+  }
+}
+## pipeline
+Get-NetAdapter -physical | select InterfaceAlias, status | where Status -eq Up | Get-NetIPAddress |where IPv4Address | Select Interfacealias,IpV4Address
